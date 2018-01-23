@@ -83,10 +83,18 @@ class Bst implements BstInterface{
     }
   }
   min() {
-    return 1; 
+    return this.minNode(this.root);
+  }
+  private minNode(node: BstNode) {
+    if (node.left) return this.minNode(node.left);
+    else return node.key;
   }
   max() {
-    return 100;
+    return this.maxNode(this.root);
+  }
+  private maxNode(node: BstNode) {
+    if (node.right) return this.maxNode(node.right);
+    else return node.key;
   }
   remove(key: key) {
   }
@@ -108,3 +116,6 @@ console.log(BstInstance.search(2)) // true
 console.log(BstInstance.search(5)) // false
 console.log(BstInstance.search(8)) // true
 console.log(BstInstance.search(9)) // false
+
+console.log('最小值是 ', BstInstance.min())
+console.log('最大值是 ', BstInstance.max())
