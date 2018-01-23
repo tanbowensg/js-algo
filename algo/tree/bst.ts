@@ -62,7 +62,25 @@ class Bst implements BstInterface{
     }
   }
   search(key: key) {
-    return true;
+    return this.searchNode(this.root, key);
+  }
+  private searchNode(node: BstNode, key: key) {
+    // 如果节点的键和要查找的键相等，就返回 true
+    if (node.key === key) {
+      return true;
+    }
+    if (key > node.key) {
+      // 如果要查找的键大于当前节点的键，并且当前节点有右子节点，就查看右子节点
+      if (node.right) return this.searchNode(node.right, key);
+      // 否则就说明二叉树中没有这个键
+      if (!node.right) return false;
+    }
+    if (key < node.key) {
+      // 如果要查找的键小于当前节点的键，并且当前节点有左子节点，就查看左子节点
+      if (node.left) return this.searchNode(node.left, key);
+      // 否则就说明二叉树中没有这个键
+      if (!node.left) return false;
+    }
   }
   min() {
     return 1; 
@@ -81,5 +99,12 @@ BstInstance.insert(1)
 BstInstance.insert(3)
 BstInstance.insert(2)
 BstInstance.insert(4)
+BstInstance.insert(10)
+BstInstance.insert(8)
 
 console.log(JSON.stringify(BstInstance))
+console.log(BstInstance.search(1)) // true
+console.log(BstInstance.search(2)) // true
+console.log(BstInstance.search(5)) // false
+console.log(BstInstance.search(8)) // true
+console.log(BstInstance.search(9)) // false
