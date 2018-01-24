@@ -100,42 +100,36 @@ class Bst implements BstInterface{
     else return node;
   }
   remove(key: key) {
-    this.removeNode(null, this.root, key);
+    this.removeNode(this.root, key);
   }
-  removeNode(parent: BstNode, node: BstNode, key): BstNode {
+  removeNode(node: BstNode, key): BstNode {
     if (!node) {
       return null;
     }
     if (key > node.key) {
-      this.removeNode(node, node.right, key);
+      node.right = this.removeNode(node.right, key);
     }
     if (key < node.key) {
-      this.removeNode(node, node.left, key);
+      node.left = this.removeNode(node.left, key);
     }
     if (key === node.key) {
-      // 找到了要删除的节点
+      // 找到了要删除的节点，接下来每一步本质上是替换操作。删除就是用 null 替换节点。
       if (!node.left && !node.right) {
         // 如果要删除的节点没有子节点，就直接把他父节点的子节点删除
-        if (parent.left === node) parent.left = null;
-        if (parent.right === node) parent.right = null;
+        return null;
       } 
-      else if (!node.left) {
-        // 如果要删除的节点只有右节点，就用右节点替代这个节点
-        if (parent.left === node) parent.left = node.right;
-        if (parent.right === node) parent.right = node.right;
-      }
-      else if (!node.right) {
-        // 如果要删除的节点只有左节点，就用左节点替代这个节点
-        if (parent.left === node) parent.left = node.left;
-        if (parent.right === node) parent.right = node.left;
-      }
+      // 如果要删除的节点只有右节点，就用右节点替代这个节点
+      else if (!node.left) return node.right;
+      // 如果要删除的节点只有左节点，就用左节点替代这个节点
+      else if (!node.right) return node.right;
       else {
         // 如果要删除的节点有两个节点，就找出右节点树中的最小节点。
         // 然后用最小节点，替代这个节点。
         // 最后删除一开始的最小节点。
         const minNode = this.minNode(node);
-        this.remove(minNode.key);
         node.key = minNode.key;
+        node.right = this.removeNode(node.right, minNode.key);
+        return node;
       }
     }
   }
@@ -205,20 +199,20 @@ BstInstance.postOrderTraverse(key => {
 })
 
 console.log('删除了 6')
-console.log('6 还存在吗？', BstInstance.search(6))
+console.log('6 还存在吗？', BstInstance.search(5))
 console.log('删除了 3')
-console.log('3 还存在吗？', BstInstance.search(3))
+console.log('3 还存在吗？', BstInstance.search(5))
 console.log('删除了 1')
 BstInstance.remove(1);
-console.log('1 还存在吗？', BstInstance.search(1))
+console.log('1 还存在吗？', BstInstance.search(5))
 console.log('删除了 5')
 BstInstance.remove(5);
 console.log('5 还存在吗？', BstInstance.search(5))
 console.log('删除了 10')
 BstInstance.remove(10);
-console.log('10 还存在吗？', BstInstance.search(10))
+console.log('10 还存在吗？', BstInstance.search(5))
 console.log('删除了 0')
 BstInstance.remove(0);
-console.log('0 还存在吗？', BstInstance.search(0))
-console.log('9 还存在吗？', BstInstance.search(9))
-console.log('7 还存在吗？', BstInstance.search(7))
+console.log('0 还存在吗？', BstInstance.search(5))
+console.log('9 还存在吗？', BstInstance.search(5))
+console.log('7 还存在吗？', BstInstance.search(5))
