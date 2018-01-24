@@ -12,6 +12,7 @@ interface BstInterface {
   min(): key;
   max(): key;
   remove(key: key): void;
+  inOrderTraverse(cb: (key: key) => void) : void;
 }
 
 class BstNode implements NodeInterface {
@@ -82,40 +83,57 @@ class Bst implements BstInterface{
       if (!node.left) return false;
     }
   }
-  min() {
-    return this.minNode(this.root);
+  min(): key {
+    return this.minNode(this.root).key;
   }
-  private minNode(node: BstNode) {
+  private minNode(node: BstNode): BstNode {
     if (node.left) return this.minNode(node.left);
-    else return node.key;
+    else return node;
   }
-  max() {
-    return this.maxNode(this.root);
+  max(): key {
+    return this.maxNode(this.root).key;
   }
-  private maxNode(node: BstNode) {
+  private maxNode(node: BstNode): BstNode {
     if (node.right) return this.maxNode(node.right);
-    else return node.key;
+    else return node;
   }
   remove(key: key) {
+  }
+  // 从小到大按顺序遍历
+  inOrderTraverse(cb: (key: key) => void) {
+    this.inOrderTraverseNode(this.root, cb);
+  }
+  private inOrderTraverseNode(node: BstNode, cb: (key: key) => void) {
+    if (node) {
+      this.inOrderTraverseNode(node.left, cb);
+      cb(node.key);
+      this.inOrderTraverseNode(node.right, cb);
+    }
   }
 }
 
 
 const BstInstance = new Bst();
 
-BstInstance.insert(1)
+BstInstance.insert(6)
 BstInstance.insert(3)
-BstInstance.insert(2)
-BstInstance.insert(4)
+BstInstance.insert(1)
+BstInstance.insert(5)
+BstInstance.insert(9)
+BstInstance.insert(7)
 BstInstance.insert(10)
-BstInstance.insert(8)
+BstInstance.insert(0)
 
 console.log(JSON.stringify(BstInstance))
 console.log(BstInstance.search(1)) // true
-console.log(BstInstance.search(2)) // true
-console.log(BstInstance.search(5)) // false
-console.log(BstInstance.search(8)) // true
-console.log(BstInstance.search(9)) // false
+console.log(BstInstance.search(2)) // false
+console.log(BstInstance.search(5)) // true
+console.log(BstInstance.search(8)) // false
+console.log(BstInstance.search(9)) // true
 
 console.log('最小值是 ', BstInstance.min())
 console.log('最大值是 ', BstInstance.max())
+
+BstInstance.inOrderTraverse(key => {
+  console.log('中序遍历', key);
+})
