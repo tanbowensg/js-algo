@@ -217,3 +217,5 @@ BstInstance.remove(0);
 console.log('0 还存在吗？', BstInstance.search(5));
 console.log('9 还存在吗？', BstInstance.search(5));
 console.log('7 还存在吗？', BstInstance.search(5));
+
+export default Bst;
