@@ -1,39 +1,39 @@
-type key = string | number;
+type keyType = string | number;
 
 interface NodeInterface {
-  left?: NodeInterface;
-  right?: NodeInterface;
-  key: key;
+  left: NodeInterface | null;
+  right: NodeInterface | null;
+  key: keyType;
 }
 
+type NodeInterfaceOrBoolean = NodeInterface | boolean;
+type NodeInterfaceOrNull = NodeInterface | null;
+
 interface BstInterface {
-  insert(key: key): void;
-  search(key: key): Boolean;
-  min(): key;
-  max(): key;
-  remove(key: key): void;
-  inOrderTraverse(cb: (key: key) => void) : void;
-  preOrderTraverse(cb: (key: key) => void) : void;
-  postOrderTraverse(cb: (key: key) => void) : void;
+  insert(key: keyType): void;
+  search(key: keyType): Boolean;
+  min(): keyType;
+  max(): keyType;
+  remove(key: keyType): void;
+  inOrderTraverse(cb: (key: keyType) => void): void;
+  preOrderTraverse(cb: (key: keyType) => void): void;
+  postOrderTraverse(cb: (key: keyType) => void): void;
 }
 
 class BstNode implements NodeInterface {
-  left?: NodeInterface;
-  right?: NodeInterface;
-  key: key;
-  constructor(key) {
-     this.left = null;
-     this.right = null;
-     this.key = key;
+  left: NodeInterfaceOrNull;
+  right: NodeInterfaceOrNull;
+  key: keyType;
+  constructor(key: keyType) {
+    this.left = null;
+    this.right = null;
+    this.key = key;
   }
 }
 
-class Bst implements BstInterface{
+class Bst implements BstInterface {
   root: BstNode;
-  constructor() {
-
-  }
-  insert(key: key) {
+  insert(key: keyType) {
     const newNode = new BstNode(key);
     if (!this.root) {
       // 如果根节点为空，就把新节点添加到根节点
@@ -42,7 +42,7 @@ class Bst implements BstInterface{
       this.insertNode(this.root, newNode);
     }
   }
-  private insertNode(node: BstNode, newNode: BstNode) {
+  private insertNode(node: NodeInterface, newNode: NodeInterface) {
     if (newNode.key > node.key) {
       // 如果新的键比当前节点的键要大，就查看右子节点
       if (!node.right) {
@@ -50,7 +50,7 @@ class Bst implements BstInterface{
         node.right = newNode;
       } else {
         // 否则就递归地检查右子节点
-        this.insertNode(node.right, newNode)
+        this.insertNode(node.right, newNode);
       }
     }
     if (newNode.key < node.key) {
@@ -60,14 +60,14 @@ class Bst implements BstInterface{
         node.left = newNode;
       } else {
         // 否则就递归地检查左子节点
-        this.insertNode(node.left, newNode)
+        this.insertNode(node.left, newNode);
       }
     }
   }
-  search(key: key) {
-    return this.searchNode(this.root, key);
+  search(key: keyType) {
+    return !!this.searchNode(this.root, key);
   }
-  private searchNode(node: BstNode, key: key) {
+  private searchNode(node: NodeInterface, key: keyType): NodeInterfaceOrBoolean {
     // 如果节点的键和要查找的键相等，就返回 true
     if (node.key === key) {
       return true;
@@ -84,25 +84,26 @@ class Bst implements BstInterface{
       // 否则就说明二叉树中没有这个键
       if (!node.left) return false;
     }
+    return false;
   }
-  min(): key {
+  min(): keyType {
     return this.minNode(this.root).key;
   }
-  private minNode(node: BstNode): BstNode {
+  private minNode(node: NodeInterface): NodeInterface {
     if (node.left) return this.minNode(node.left);
     else return node;
   }
-  max(): key {
+  max(): keyType {
     return this.maxNode(this.root).key;
   }
-  private maxNode(node: BstNode): BstNode {
+  private maxNode(node: NodeInterface): NodeInterface {
     if (node.right) return this.maxNode(node.right);
     else return node;
   }
-  remove(key: key) {
+  remove(key: keyType) {
     this.removeNode(this.root, key);
   }
-  removeNode(node: BstNode, key): BstNode {
+  removeNode(node: NodeInterfaceOrNull, key: keyType): NodeInterfaceOrNull {
     if (!node) {
       return null;
     }
@@ -132,32 +133,33 @@ class Bst implements BstInterface{
         return node;
       }
     }
+    return null;
   }
   // 从小到大按顺序遍历
-  inOrderTraverse(cb: (key: key) => void) {
+  inOrderTraverse(cb: (key: keyType) => void) {
     this.inOrderTraverseNode(this.root, cb);
   }
-  private inOrderTraverseNode(node: BstNode, cb: (key: key) => void) {
+  private inOrderTraverseNode(node: NodeInterfaceOrNull, cb: (key: keyType) => void) {
     if (node) {
       this.inOrderTraverseNode(node.left, cb);
       cb(node.key);
       this.inOrderTraverseNode(node.right, cb);
     }
   }
-  preOrderTraverse(cb: (key: key) => void) {
+  preOrderTraverse(cb: (key: keyType) => void) {
     this.preOrderTraverseNode(this.root, cb);
   }
-  private preOrderTraverseNode(node: BstNode, cb: (key: key) => void) {
+  private preOrderTraverseNode(node: NodeInterfaceOrNull, cb: (key: keyType) => void) {
     if (node) {
       cb(node.key);
       this.preOrderTraverseNode(node.left, cb);
       this.preOrderTraverseNode(node.right, cb);
     }
   }
-  postOrderTraverse(cb: (key: key) => void) {
+  postOrderTraverse(cb: (key: keyType) => void) {
     this.postOrderTraverseNode(this.root, cb);
   }
-  private postOrderTraverseNode(node: BstNode, cb: (key: key) => void) {
+  private postOrderTraverseNode(node: NodeInterfaceOrNull, cb: (key: keyType) => void) {
     if (node) {
       this.postOrderTraverseNode(node.left, cb);
       this.postOrderTraverseNode(node.right, cb);
@@ -166,53 +168,52 @@ class Bst implements BstInterface{
   }
 }
 
-
 const BstInstance = new Bst();
 
-BstInstance.insert(6)
-BstInstance.insert(3)
-BstInstance.insert(1)
-BstInstance.insert(5)
-BstInstance.insert(9)
-BstInstance.insert(7)
-BstInstance.insert(10)
-BstInstance.insert(0)
+BstInstance.insert(6);
+BstInstance.insert(3);
+BstInstance.insert(1);
+BstInstance.insert(5);
+BstInstance.insert(9);
+BstInstance.insert(7);
+BstInstance.insert(10);
+BstInstance.insert(0);
 
-console.log(JSON.stringify(BstInstance))
-console.log(BstInstance.search(1)) // true
-console.log(BstInstance.search(2)) // false
-console.log(BstInstance.search(5)) // true
-console.log(BstInstance.search(8)) // false
-console.log(BstInstance.search(9)) // true
+console.log(JSON.stringify(BstInstance));
+console.log(BstInstance.search(1)); // true
+console.log(BstInstance.search(2)); // false
+console.log(BstInstance.search(5)); // true
+console.log(BstInstance.search(8)); // false
+console.log(BstInstance.search(9)); // true
 
-console.log('最小值是 ', BstInstance.min())
-console.log('最大值是 ', BstInstance.max())
+console.log('最小值是 ', BstInstance.min());
+console.log('最大值是 ', BstInstance.max());
 
 BstInstance.inOrderTraverse(key => {
   console.log('中序遍历', key);
-})
+});
 BstInstance.preOrderTraverse(key => {
   console.log('先序遍历', key);
-})
+});
 BstInstance.postOrderTraverse(key => {
   console.log('后序遍历', key);
-})
+});
 
-console.log('删除了 6')
-console.log('6 还存在吗？', BstInstance.search(5))
-console.log('删除了 3')
-console.log('3 还存在吗？', BstInstance.search(5))
-console.log('删除了 1')
+console.log('删除了 6');
+console.log('6 还存在吗？', BstInstance.search(5));
+console.log('删除了 3');
+console.log('3 还存在吗？', BstInstance.search(5));
+console.log('删除了 1');
 BstInstance.remove(1);
-console.log('1 还存在吗？', BstInstance.search(5))
-console.log('删除了 5')
+console.log('1 还存在吗？', BstInstance.search(5));
+console.log('删除了 5');
 BstInstance.remove(5);
-console.log('5 还存在吗？', BstInstance.search(5))
-console.log('删除了 10')
+console.log('5 还存在吗？', BstInstance.search(5));
+console.log('删除了 10');
 BstInstance.remove(10);
-console.log('10 还存在吗？', BstInstance.search(5))
-console.log('删除了 0')
+console.log('10 还存在吗？', BstInstance.search(5));
+console.log('删除了 0');
 BstInstance.remove(0);
-console.log('0 还存在吗？', BstInstance.search(5))
-console.log('9 还存在吗？', BstInstance.search(5))
-console.log('7 还存在吗？', BstInstance.search(5))
+console.log('0 还存在吗？', BstInstance.search(5));
+console.log('9 还存在吗？', BstInstance.search(5));
+console.log('7 还存在吗？', BstInstance.search(5));
