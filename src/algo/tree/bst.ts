@@ -1,8 +1,8 @@
 type keyType = string | number;
 
 interface NodeInterface {
-  left: NodeInterface | null;
-  right: NodeInterface | null;
+  left: NodeInterfaceOrNull;
+  right: NodeInterfaceOrNull;
   key: keyType;
 }
 
@@ -166,6 +166,19 @@ class Bst implements BstInterface {
       cb(node.key);
     }
   }
+  treeHeight(): number {
+    return this.nodeHeight(this.root);
+  }
+  // 计算一个节点的高度，如果一个节点没有任何子元素，就算 -1
+  nodeHeight(node: NodeInterfaceOrNull): number {
+    if (node === null) {
+      return -1;
+    } else {
+      const leftHeight = this.nodeHeight(node ? node.left : node);
+      const rightHeight = this.nodeHeight(node ? node.right : node);
+      return Math.max(leftHeight, rightHeight) + 1;
+    }
+  }
 }
 
 const BstInstance = new Bst();
@@ -179,7 +192,8 @@ BstInstance.insert(7);
 BstInstance.insert(10);
 BstInstance.insert(0);
 
-console.log(JSON.stringify(BstInstance));
+console.log('这棵树的高度是', BstInstance.treeHeight());
+
 console.log(BstInstance.search(1)); // true
 console.log(BstInstance.search(2)); // false
 console.log(BstInstance.search(5)); // true
